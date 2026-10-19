@@ -46,26 +46,35 @@ echo "       SSH HARDENING + FAIL2BAN"
 echo "======================================"
 
 # Выбор порта
-while true; do
-    read -rp "Введи новый SSH-порт (1-65535): " SSH_PORT
 
-    if [[ ! "$SSH_PORT" =~ ^[0-9]+$ ]] ||
-       (( 10#$SSH_PORT < 1 || 10#$SSH_PORT > 65535 )); then
+while true; do
+    read -r -p "Введи новый SSH-порт (1-65535): " SSH_PORT
+
+    # Проверяем, что введены только цифры
+    if [[ ! "$SSH_PORT" =~ ^[0-9]{1,5}$ ]]; then
         echo "Ошибка: введи число от 1 до 65535."
         continue
     fi
 
+    # Убираем ведущие нули
     SSH_PORT=$((10#$SSH_PORT))
 
+    if (( SSH_PORT < 1 || SSH_PORT > 65535 )); then
+        echo "Ошибка: порт должен быть от 1 до 65535."
+        continue
+    fi
+
+    # Проверяем, не занят ли порт
     if ss -H -lnt 2>/dev/null |
-       awk '{print $4}' |
-       grep -Eq "(:|\])${SSH_PORT}$"; then
+        awk '{print $4}' |
+        grep -Eq "(:|\])${SSH_PORT}$"; then
         echo "Ошибка: порт $SSH_PORT уже занят."
         continue
     fi
 
     break
 done
+
 
 echo
 echo "[1/6] Создаю резервную копию..."
