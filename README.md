@@ -1,3 +1,3 @@
 ```bash
-curl -fsSL https://raw.githubusercontent.com/MasunyaNyashka/vps-setup/main/setup.sh | sudo bash
+curl -fsSL https://raw.githubusercontent.com/MasunyaNyashka/vps-setup/refs/heads/main/start.sh | sudo bash
 ```
